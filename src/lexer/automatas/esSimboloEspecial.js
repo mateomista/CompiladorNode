@@ -100,6 +100,20 @@ export function esSimboloEspecial(fuente, pos) {
                 token: new Token('coma', lexema),
                 nuevaPos: i
             };
+        case '(':
+            lexema += fuente[i];
+            i++;
+            return {
+                token: new Token('parAbre', lexema),
+                nuevaPos: i
+            };
+        case ')':
+            lexema += fuente[i];
+            i++;
+            return {
+                token: new Token('parCierra', lexema),
+                nuevaPos: i
+            };
         default:
             return null; // No es un símbolo especial reconocido
     }
