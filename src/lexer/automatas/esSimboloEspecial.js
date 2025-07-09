@@ -114,6 +114,20 @@ export function esSimboloEspecial(fuente, pos) {
                 token: new Token('parCierra', lexema),
                 nuevaPos: i
             };
+        case '{':
+            lexema += fuente[i];
+            i++;
+            return {
+                token: new Token('llaveAbre', lexema),
+                nuevaPos: i
+            };
+        case '}':
+            lexema += fuente[i];
+            i++;
+            return {
+                token: new Token('llaveCierra', lexema),
+                nuevaPos: i
+            };
         default:
             return null; // No es un símbolo especial reconocido
     }
