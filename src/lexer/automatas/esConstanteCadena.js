@@ -1,30 +1,47 @@
 import { Token } from '../token.js';
+import { categoriaCaracter } from './utils.js';
 
-export function esConstanteCadena(fuente, pos) {
+const Q = { q0: 0, q1: 1, q2: 2, q3: 3 };
+const EstadosFinales = [Q.q3];
+
+const Delta = [
+       // para ", letra, numero, otro
+    /* q0 */ [Q.q1, Q.q2, Q.q2, Q.q2], 
+    /* q1 */ [Q.q3, Q.q1, Q.q1, Q.q1], 
+    /* q2 */ [Q.q2, Q.q2, Q.q2, Q.q2], // error
+    /* q3 */ [Q.q3, Q.q3, Q.q3, Q.q3]  // aceptación
+];
+
+export function esCadena(fuente, pos) {
+    let estadoActual = Q.q0;
     let i = pos;
+    let lexema = '';
     const longitud = fuente.length;
 
-    if (fuente[i] !== '"') {
-        return null; // No es una constante cadena
+    if (fuente[i] === '"'){
+        
+        estadoActual = Delta[estadoActual][0];
+        i++; // Avanzamos para empezar a leer la cadena
+
+        while (estadoActual !== Q.q2 && i < longitud) {
+            if (fuente[i] === '"') {
+                estadoActual = Delta[estadoActual][0]; // Volvemos al estado de aceptación
+                i++; // Avanzamos para salir de la cadena
+                return {
+                    token: new Token('cC', lexema),
+                    nuevaPos: i
+                };
+            } else {
+                let categoriaCaracter = categoriaCaracter(fuente[i]);
+                estadoActual = Delta[estadoActual][categoriaCaracter + 1]; // +1 porque el primer estado es para el carácter de apertura
+                lexema += fuente[i];
+                i++;
+            }
+        }
+    } else {
+        return false; // No es una cadena válida
     }
+
+    return false; // No es una cadena válida
     
-    i++;
-    let lexema = '';
-
-    while (i < longitud && fuente[i] !== '"') {
-        lexema += fuente[i];
-        i++;
-    }
-
-    if (i >= longitud || fuente[i] !== '"') {
-        return null; // No se encontró el cierre de la cadena
-    } 
-
-    i++;
-
-    return {
-        token: new Token('cC', lexema ),
-        nuevaPos: i
-    };
-
 }
