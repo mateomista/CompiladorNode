@@ -10,32 +10,36 @@ const palabrasReservadas = [
   "else",
   "while",
   "do",
-  "for",
+  "for"
 ];
 
 export class TablaDeSimbolos {
-  constructor(array = palabrasReservadas) {
+  constructor() {
     this.simbolos = [];
-    array.forEach(element => {
-      this.simbolos.push(new Token(element, element));
-    });
-  }
+}
 
-  agregar(token) {
-    if (!this.simbolos.some(t => t.lexema === token.lexema)) {
+agregar(token) {
+    if (palabrasReservadas.includes(token.valor)) {
+      this.simbolos.push(new Token(token.valor, token.valor));
+    } else {
       this.simbolos.push(token);
     }
-  }
+}
 
   obtener(lexema) {
-    return this.simbolos.find(t => t.lexema === lexema) || null;
+    return this.simbolos.find(t => t.valor === lexema) || null;
   }
 
   contiene(lexema) {
-    return this.simbolos.some(t => t.lexema === lexema);
+    return this.simbolos.some(t => t.valor === lexema);
+  }
+
+  contieneFinDeArchivo() {
+    return this.simbolos.some(t => t.tipo === '$');
   }
 
   limpiar() {
     this.simbolos = [];
   }
+
 }
