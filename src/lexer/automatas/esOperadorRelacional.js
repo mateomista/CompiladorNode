@@ -1,4 +1,4 @@
-import { token } from '../token.js';
+import { Token } from '../token.js';
 
 export function esOperadorRelacional(fuente, pos) {
     let i = pos;
@@ -6,7 +6,7 @@ export function esOperadorRelacional(fuente, pos) {
     let lexema = '';
 
     if (i >= longitud) {
-        return null; // No hay caracteres para procesar
+        return false; // No hay caracteres para procesar
     }
 
     if (fuente[i] === '<') {
@@ -65,6 +65,6 @@ export function esOperadorRelacional(fuente, pos) {
         }; // es un operador de igualdad
     }
 
-    return null; // No es un operador relacional
+    return false; // No es un operador relacional
 
 }

@@ -6,7 +6,7 @@ export function esSimboloEspecial(fuente, pos) {
     let lexema = '';
 
     if (i >= longitud) {
-        return null; // No hay caracteres para procesar
+        return false; // No hay caracteres para procesar
     }
 
     switch (fuente[i]) {
@@ -49,7 +49,7 @@ export function esSimboloEspecial(fuente, pos) {
                     nuevaPos: i
                 };
             } else {
-                return null; // No es un símbolo especial reconocido
+                return false; // No es un símbolo especial reconocido
             }
 
         case '!':
@@ -63,7 +63,7 @@ export function esSimboloEspecial(fuente, pos) {
                     nuevaPos: i
                 }; // es negacion
             } else {
-                return null; // No es un símbolo especial reconocido
+                return false; // No es un símbolo especial reconocido
             }
         case '&':
             lexema += fuente[i];
@@ -129,6 +129,6 @@ export function esSimboloEspecial(fuente, pos) {
                 nuevaPos: i
             };
         default:
-            return null; // No es un símbolo especial reconocido
+            return false; // No es un símbolo especial reconocido
     }
 }

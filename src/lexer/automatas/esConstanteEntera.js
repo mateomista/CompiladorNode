@@ -1,4 +1,4 @@
-import { token } from '../token.js';
+import { Token } from '../token.js';
 
 const Q = { q0: 0, q1: 1, q2: 2, q3: 3, q4: 4 };
 const EstadosFinales = [Q.q3];
@@ -40,7 +40,7 @@ export function esConstanteEntera(fuente, pos) {
         } else if (estadoActual === Q.q3) {
             // Estado de aceptación
             return {
-                token: new token('cE', lexema),
+                token: new Token('cE', lexema),
                 nuevaPos: i
             };
         } else {

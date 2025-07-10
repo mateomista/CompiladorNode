@@ -1,4 +1,4 @@
-import { categoriaCaracter } from '../utils.js';
+import { categoriaCaracter } from './utils.js';
 import { Token } from '../token.js';
 
 const Q = { q0: 0, q1: 1, q2: 2, q3: 3 };
@@ -9,13 +9,6 @@ const Delta = [
     /* q2 */ [Q.q2, Q.q2, Q.q2],
    /* q3 */  [Q.q3, Q.q3, Q.q3]   // estado de aceptación
 ];
-
-// Alfabeto reducido a categorías
-const Sigma = {
-    LETRA: 0,
-    DIGITO: 1,
-    OTRO: 2
-};
 
 export function esIdentificador(fuente, pos) {
     let estadoActual = Q.q0;

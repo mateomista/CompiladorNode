@@ -1,4 +1,4 @@
-class Token {
+export class Token {
 
     constructor(tipo, valor) {
         this.tipo = tipo; // Tipo de token (identificador, número, operador, etc.)
