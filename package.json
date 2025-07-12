@@ -9,5 +9,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "data-forge": "^1.10.4",
+    "data-forge-fs": "^0.0.9",
+    "xlsx": "^0.18.5"
+  }
 }

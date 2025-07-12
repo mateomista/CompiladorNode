@@ -20,7 +20,7 @@ export class TablaDeSimbolos {
 
 agregar(token) {
     if (palabrasReservadas.includes(token.valor)) {
-      this.simbolos.push(new Token(token.valor, token.valor));
+      this.simbolos.push(new Token('pR', token.valor));
     } else {
       this.simbolos.push(token);
     }
