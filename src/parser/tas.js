@@ -7,11 +7,26 @@ const df = new dataForge.DataFrame(jsonData);
 
 
 export class TAS {
-
-    #df;
+  #df;
 
   constructor() {
-    this.#df = new dataForge.DataFrame(jsonData);
+    // Crea el DataFrame original
+    let df = new dataForge.DataFrame(jsonData);
+
+    // Aplica limpieza: elimina espacios en blanco al inicio y final de todos los valores string
+    df = df.select(row => {
+      const newRow = {};
+      for (const key in row) {
+        if (typeof row[key] === 'string') {
+          newRow[key.trim()] = row[key].trim(); // También limpia las claves si es necesario
+        } else {
+          newRow[key] = row[key];
+        }
+      }
+      return newRow;
+    });
+
+    this.#df = df;
   }
 
   getDataFrame() {
@@ -35,7 +50,7 @@ export class TAS {
     return filtered.count() > 0 ? filtered.first() : null;
   }
 
-   getValueAt(rowColumnName, rowValue, targetColumnName) {
+  getValueAt(rowColumnName, rowValue, targetColumnName) {
     const row = this.getRowByName(rowColumnName, rowValue);
     if (row && targetColumnName in row) {
       return row[targetColumnName];
@@ -44,7 +59,7 @@ export class TAS {
   }
 }
 
-const tas = new TAS(jsonData);
+/* const tas = new TAS(jsonData);
 
 const valor = tas.getValueAt('__EMPTY', 'Declaracion ', 'id');
 if (valor === null) {
@@ -52,3 +67,4 @@ if (valor === null) {
 } else {
   console.log(`El valor es: ${valor}`);
 }
+*/

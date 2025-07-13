@@ -95,10 +95,10 @@ const tabla = analizador.getTablaDeSimbolos();
 
 const siguientetoken = analizador.siguienteToken();
 
-console.log(tabla);
 
-/* while (true) {
+
+while (true) {
   const token = analizador.siguienteToken();
   if (!token) break; // Si no hay más tokens, salimos del bucle
   console.log(token);
-} */
+} 
