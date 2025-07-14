@@ -4,7 +4,7 @@ import { Token } from './token.js';
 import { esEspacioOControl } from './utils.js';
 import fs from 'node:fs';
 
-const filePath = '../src/data/program.txt';
+const filePath = './src/data/program.txt';
 
 function cargarFuente() {
     try {
@@ -20,10 +20,10 @@ const fuente = cargarFuente();
 export class AnalizadorLexico {
   #indice = 0;           
   #tablaDeSimbolos = []; 
-  #fuente = '';          
+  #fuente = ' ';          
 
   constructor(fuente) {
-    this.#fuente = fuente;
+    this.#fuente = cargarFuente();
     this.#tablaDeSimbolos = new TablaDeSimbolos();
     this.#indice = 0;
     this.analizarFuente();
@@ -95,10 +95,10 @@ const tabla = analizador.getTablaDeSimbolos();
 
 const siguientetoken = analizador.siguienteToken();
 
-console.log(tabla);
 
-/* while (true) {
+
+while (true) {
   const token = analizador.siguienteToken();
   if (!token) break; // Si no hay más tokens, salimos del bucle
   console.log(token);
-} */
+} 
