@@ -1,71 +1,104 @@
 import { esConstanteCadena, esConstanteEntera, esConstanteReal, esIdentificador, esOperadorRelacional, esSimboloEspecial} from './automatas/index.js';
+import { TablaDeSimbolos } from './tablaDeSimbolos.js';
 import { Token } from './token.js';
 import { esEspacioOControl } from './utils.js';
+import fs from 'node:fs';
 
+const filePath = '../src/data/program.txt';
 
-export function lexer(fuente, tablaDeSimbolos, pos) {
-
-    let i = pos;
-    let longitud = fuente.length;
-
-    while (i < longitud && esEspacioOControl(fuente[i])) {
-        console.log(`Ignorando espacio o control en la posición ${i}: '${fuente[i]}'`);
-        i++;
+function cargarFuente() {
+    try {
+        const data = fs.readFileSync(filePath, 'utf8');
+        return data;
+    } catch (err) {
+        console.error(`Error al leer el archivo: ${err}`);
+        return '';
     }
-
-    console.log(`Procesando el carácter en la posición ${i}: '${fuente[i]}'`);
-    // Si llegamos al final del archivo
-    if (i >= fuente.length) {
-    
-            let token = new Token('$', 'fin de archivo')
-            tablaDeSimbolos.agregar(token);
-
-            return {
-                tablaDeSimbolos,
-                nuevaPos: i,
-            };
-    }
-
-    let resultado = false   ;
-
-    if ((resultado = esIdentificador(fuente, i)) !== false) {
-        tablaDeSimbolos.agregar(resultado.token);
-        return {
-            tablaDeSimbolos,
-            nuevaPos: resultado.nuevaPos,
-        };
-    } else if ((resultado = esConstanteCadena(fuente, i)) !== false) {
-        tablaDeSimbolos.agregar(resultado.token);
-        return {
-            tablaDeSimbolos,
-            nuevaPos: resultado.nuevaPos,
-        };
-    } else if ((resultado = esConstanteReal(fuente, i)) !== false) {
-        tablaDeSimbolos.agregar(resultado.token);
-        return {
-            tablaDeSimbolos,
-            nuevaPos: resultado.nuevaPos,
-        };
-    } else if ((resultado = esConstanteEntera(fuente, i)) !== false) {
-        tablaDeSimbolos.agregar(resultado.token);
-        return {
-            tablaDeSimbolos,
-            nuevaPos: resultado.nuevaPos,
-        };
-    } else if ((resultado = esOperadorRelacional(fuente, i)) !== false) {
-        tablaDeSimbolos.agregar(resultado.token);
-        return {
-            tablaDeSimbolos,
-            nuevaPos: resultado.nuevaPos,
-        };
-    } else if ((resultado = esSimboloEspecial(fuente, i)) !== false) {
-        tablaDeSimbolos.agregar(resultado.token);
-        return {
-            tablaDeSimbolos,
-            nuevaPos: resultado.nuevaPos,
-        };
-    } else {
-        throw new Error(`Error léxico en la posición ${i}: '${fuente[i]}' no es un token válido.`);
-    }
-
 }
+
+const fuente = cargarFuente();
+export class AnalizadorLexico {
+  #indice = 0;           
+  #tablaDeSimbolos = []; 
+  #fuente = '';          
+
+  constructor(fuente) {
+    this.#fuente = fuente;
+    this.#tablaDeSimbolos = new TablaDeSimbolos();
+    this.#indice = 0;
+    this.analizarFuente();
+  }
+
+  analizarFuente() {
+    let i = 0;
+    const longitud = this.#fuente.length;
+
+    while (i < longitud) {
+      while (i < longitud && esEspacioOControl(this.#fuente[i])) {
+        i++;
+      }
+      if (i >= longitud) break;
+
+      let resultado = false;
+
+      if ((resultado = esIdentificador(this.#fuente, i)) !== false) {
+        this.#tablaDeSimbolos.agregar(resultado.token);
+        i = resultado.nuevaPos;
+      } else if ((resultado = esConstanteCadena(this.#fuente, i)) !== false) {
+        this.#tablaDeSimbolos.agregar(resultado.token);
+        i = resultado.nuevaPos;
+      } else if ((resultado = esConstanteReal(this.#fuente, i)) !== false) {
+        this.#tablaDeSimbolos.agregar(resultado.token);
+        i = resultado.nuevaPos;
+      } else if ((resultado = esConstanteEntera(this.#fuente, i)) !== false) {
+        this.#tablaDeSimbolos.agregar(resultado.token);
+        i = resultado.nuevaPos;
+      } else if ((resultado = esOperadorRelacional(this.#fuente, i)) !== false) {
+        this.#tablaDeSimbolos.agregar(resultado.token);
+        i = resultado.nuevaPos;
+      } else if ((resultado = esSimboloEspecial(this.#fuente, i)) !== false) {
+        this.#tablaDeSimbolos.agregar(resultado.token);
+        i = resultado.nuevaPos;
+      } else {
+        throw new Error(`Error léxico en la posición ${i}: '${this.#fuente[i]}' no es un token válido.`);
+      }
+    }
+
+    // Token fin de archivo
+    this.#tablaDeSimbolos.agregar(new Token('$', 'fin de archivo'));
+  }
+
+  primerToken() {
+    return this.#tablaDeSimbolos.length > 0 ? this.#tablaDeSimbolos[0] : null;
+  }
+
+  siguienteToken() {
+    // Devuelve y elimina el primer token
+    const token = this.#tablaDeSimbolos.simbolos.shift();
+    return token;
+
+
+  }
+
+
+  getTablaDeSimbolos() {
+    // Si quieres exponer la tabla completa (cuidado con la mutabilidad)
+    return this.#tablaDeSimbolos;
+  }
+}
+
+
+
+const analizador = new AnalizadorLexico(fuente);
+
+const tabla = analizador.getTablaDeSimbolos();
+
+const siguientetoken = analizador.siguienteToken();
+
+console.log(tabla);
+
+/* while (true) {
+  const token = analizador.siguienteToken();
+  if (!token) break; // Si no hay más tokens, salimos del bucle
+  console.log(token);
+} */

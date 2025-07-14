@@ -48,14 +48,12 @@ export function esConstanteReal(fuente, pos) {
 
     let cat = categoriaCaracter(fuente[i]);
     estadoActual = Delta[estadoActual][cat];
-            console.log(`Estado actual: ${estadoActual}, Carácter: '${fuente[i]}', categoría: ${cat}, Lexema: '${lexema}'`);
 
     
 
     while (estadoActual !== Q.Err && i < longitud) {
         
 
-        console.log(`Estado actual: ${estadoActual}, Carácter: '${fuente[i]}', categoría: ${cat}, Lexema: '${lexema}'`);
 
 
         if (estadoActual === Q.q1 || estadoActual === Q.q2 || estadoActual === Q.q4 ||estadoActual === Q.q5 || estadoActual === Q.q6) {
@@ -64,7 +62,6 @@ export function esConstanteReal(fuente, pos) {
         } else if (estadoActual === Q.q7) {
             // Estado de aceptación
             
-                    console.log(`Estado actual: ${estadoActual}, Carácter: '${fuente[i]}', categoría: ${cat}, Lexema: '${lexema}'`);
 
             return {
                 token: new Token('cR', lexema),
