@@ -1,8 +1,1 @@
-program while Program program hola ; + 2.3; 
-
-go
-
-
-2
-
-< j>  
+Program id ; end 

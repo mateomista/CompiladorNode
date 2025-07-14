@@ -1,4 +1,4 @@
-import { lexer } from './lexer.js';
+import { AnalizadorLexico } from './lexer.js';
 import { TablaDeSimbolos } from './tablaDeSimbolos.js';
 import fs from 'node:fs';
 
