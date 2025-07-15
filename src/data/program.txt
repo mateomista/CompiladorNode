@@ -1,1 +1,7 @@
-Program id ; end 
+Program id; 
+var1 : Int;
+var2 : Real;
+var3 : String;
+{
+    For ( i := 0; x < 10; i := 1) { }
+}

@@ -41,17 +41,10 @@ export function esSimboloEspecial(fuente, pos) {
         case ':':
             lexema += fuente[i];
             i++;
-            if (i < longitud && fuente[i] === '=') {
-                lexema += fuente[i];
-                i++;
                 return {
                     token: new Token('asignacion', lexema),
                     nuevaPos: i
                 };
-            } else {
-                return false; // No es un símbolo especial reconocido
-            }
-
         case '!':
             lexema += fuente[i];
             i++;

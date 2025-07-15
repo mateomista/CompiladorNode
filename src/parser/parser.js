@@ -61,7 +61,7 @@ export class Parser {
             
             if (topePila.esTerminal) {
                 console.log(topePila.valor)
-                if (topePila.valor === siguienteCompLexico.valor) {
+                if (topePila.valor === siguienteCompLexico.valor || topePila.valor === siguienteCompLexico.tipo) { //ver
                     siguienteCompLexico = this.#analizadorLexico.siguienteToken();
                     topePila = this.#pila.pop();
                     topePilaNodos = this.#pilaNodos.pop();
@@ -72,9 +72,14 @@ export class Parser {
                 }
 
             } else if (!topePila.esTerminal) {
+                let produccion
                 console.log('Tope de la pila de simbolos: ',topePila.valor);
                 console.log('Siguiente comp lexico: ', siguienteCompLexico.valor)
-                const produccion = this.#tas.getValueAt('__EMPTY', topePila.valor, siguienteCompLexico.valor);
+                console.log('Tipo componente lex ', siguienteCompLexico.tipo)
+                if (siguienteCompLexico.tipo === 'id') {
+                     produccion = this.#tas.getValueAt('__EMPTY', topePila.valor, siguienteCompLexico.tipo)
+                } else { produccion = this.#tas.getValueAt('__EMPTY', topePila.valor, siguienteCompLexico.valor)}
+                
                 console.log(`Producción para (${topePila.valor}, ${siguienteCompLexico.valor}):`, produccion);
                 console.log(produccion);
                 if (!produccion) {
