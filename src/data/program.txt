@@ -1,9 +1,20 @@
 Program id; 
+
 var1 : Int;
 var2 : Real;
 var3 : String;
+
 {
+
     for ( i := var1 ; x < var2 ; i := var1 ) { 
-        while x < var2 do { i := var1 ; } ;
+
+        while x < var2 do { 
+            
+            
+            i := var1 ; 
+            
+        } ;
+
      } ;
+
 }
