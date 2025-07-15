@@ -8,7 +8,7 @@ const palabrasReservadas = [
   "if",
   "then",
   "else",
-  "While",
+  "while",
   "do",
   "for",
   "Real",
