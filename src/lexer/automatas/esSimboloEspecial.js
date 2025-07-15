@@ -41,10 +41,21 @@ export function esSimboloEspecial(fuente, pos) {
         case ':':
             lexema += fuente[i];
             i++;
+            if (fuente[i] === '=') {
+                lexema += fuente[i];
+                i++
                 return {
                     token: new Token('asignacion', lexema),
                     nuevaPos: i
                 };
+            } else {
+                i++ // ver
+                return {
+                    token: new Token('asignacion', lexema),
+                    nuevaPos: i
+                };
+            }
+                
         case '!':
             lexema += fuente[i];
             i++;

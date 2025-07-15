@@ -61,7 +61,14 @@ export class Parser {
             
             if (topePila.esTerminal) {
                 console.log(topePila.valor)
-                if (topePila.valor === siguienteCompLexico.valor || topePila.valor === siguienteCompLexico.tipo) { //ver
+                if (siguienteCompLexico.tipo === 'id' || siguienteCompLexico.tipo === 'opRel') {
+                    if (topePila.valor === siguienteCompLexico.tipo ) { 
+                        siguienteCompLexico = this.#analizadorLexico.siguienteToken();
+                        topePila = this.#pila.pop();
+                        topePilaNodos = this.#pilaNodos.pop();
+                        continue;
+                    }   
+                } else if (topePila.valor === siguienteCompLexico.valor) { 
                     siguienteCompLexico = this.#analizadorLexico.siguienteToken();
                     topePila = this.#pila.pop();
                     topePilaNodos = this.#pilaNodos.pop();
@@ -76,7 +83,7 @@ export class Parser {
                 console.log('Tope de la pila de simbolos: ',topePila.valor);
                 console.log('Siguiente comp lexico: ', siguienteCompLexico.valor)
                 console.log('Tipo componente lex ', siguienteCompLexico.tipo)
-                if (siguienteCompLexico.tipo === 'id') {
+                if (siguienteCompLexico.tipo === 'id' || siguienteCompLexico.tipo === 'opRel') {
                      produccion = this.#tas.getValueAt('__EMPTY', topePila.valor, siguienteCompLexico.tipo)
                 } else { produccion = this.#tas.getValueAt('__EMPTY', topePila.valor, siguienteCompLexico.valor)}
                 
@@ -89,6 +96,7 @@ export class Parser {
                     topePilaNodos = this.#pilaNodos.pop();
                     continue;
                 } else {
+                    console.log('hola')
                     const nodosHijos = [];
                     const simbolos = produccion.trim().split(/\s+/);
                     for (const simbolo of simbolos) {
@@ -111,7 +119,7 @@ export class Parser {
                     
                 }
             }
-
+            console.log('desapilo')
             topePila = this.#pila.pop();
             topePilaNodos = this.#pilaNodos.pop();
 

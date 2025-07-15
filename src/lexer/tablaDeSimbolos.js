@@ -10,7 +10,7 @@ const palabrasReservadas = [
   "else",
   "While",
   "do",
-  "For",
+  "for",
   "Real",
   "Int",
   "String"
