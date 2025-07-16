@@ -1,33 +1,30 @@
-class EntradaTablaSimbolos {
-  constructor(nombre, tipo, scope, infoAdicional = {}) {
-    this.nombre = nombre;       // identificador
-    this.tipo = tipo;           // tipo de dato (int, real, etc.)
-    this.scope = scope;         // ámbito (global, local, función, etc.)
-    this.infoAdicional = infoAdicional; // otros atributos
-  }
-}
-
 export class TablaDeSimbolosSemantica {
+  #simbolos;
+
   constructor() {
-    this.simbolos = [];
+    this.#simbolos = [];
   }
 
-  agregar(nombre, tipo, scope, infoAdicional = {}) {
-    if (this.contiene(nombre, scope)) {
-      throw new Error(`Símbolo '${nombre}' ya declarado en el ámbito '${scope}'`);
+  agregar(tokenSemantico) {
+    if (tokenSemantico.esIdentificador) {
+        if (this.contiene(tokenSemantico.lexema)) {
+            throw new Error(`La variable '${tokenSemantico.lexema}' ya fue declarada anteriormente.`);
+        }
+    } else {
+      this.simbolos.push(tokenSemantico);
     }
-    this.simbolos.push(new EntradaTablaSimbolos(nombre, tipo, scope, infoAdicional));
+    
   }
 
-  obtener(nombre, scope) {
+  obtener(nombre) {
     return this.simbolos.find(
-      s => s.nombre === nombre && s.scope === scope
+      s => s.lexema === nombre 
     ) || null;
   }
 
-  contiene(nombre, scope) {
+  contiene(nombre) {
     return this.simbolos.some(
-      s => s.nombre === nombre && s.scope === scope
+      s => s.lexema === nombre 
     );
   }
 

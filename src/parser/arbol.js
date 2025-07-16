@@ -24,10 +24,24 @@ export class NodoArbol {
     #hijos;
     #esTerminal;
 
+    // para decoraciones semánticas
+    #tipo;
+    #referenciaTS;
+    #rol;
+    #valor;
+    #errorSemantico;
+
     constructor(simbolo, esTerminal = false) {
         this.#simbolo = simbolo;
         this.#hijos = [];
         this.#esTerminal = esTerminal; 
+        
+        // Inicializar decoraciones en null
+        this.#tipo = null;
+        this.#referenciaTS = null;
+        this.#valor = null;
+        this.#rol = null;
+        this.#errorSemantico = null;
     }
 
     agregarHijo(nodoHijo) {
@@ -35,6 +49,7 @@ export class NodoArbol {
         return this; 
     }
 
+    // Getters originales
     get simbolo() {
         return this.#simbolo;
     }
@@ -46,16 +61,62 @@ export class NodoArbol {
     get esTerminal() {
         return this.#esTerminal;
     }
+    
+    // Getters y setters para decoraciones
 
-    imprimirArbol(nodo, nivel = 0) {
-        // Indentación según nivel para visualizar jerarquía
-        const indent = '  '.repeat(nivel);
-        console.log(`${indent}- ${nodo.simbolo} ${nodo.esTerminal ? '(Terminal)' : '(No Terminal)'}`);
-
-        // Recorrer hijos recursivamente
-        for (const hijo of nodo.hijos) {
-            imprimirArbol(hijo, nivel + 1);
-        }
+    get tipo() {
+        return this.#tipo;
     }
 
+    set tipo(valor) {
+        this.#tipo = valor;
+    }
+
+    
+    get referenciaTS() {
+        return this.#referenciaTS;
+    }
+
+    set referenciaTS(valor) {
+        this.#referenciaTS = valor;
+    }
+
+    get valor() {
+        return this.#valor;
+    }
+
+    set valor(valor) {
+        this.#valor = valor;
+    }
+
+    get rol() {
+        return this.#rol;
+    }
+
+    set rol(valor) {
+        this.#rol = valor;
+    }
+
+    get errorSemantico() {
+        return this.#errorSemantico;
+    }
+
+    set errorSemantico(valor) {
+        this.#errorSemantico = valor;
+    }
+
+    imprimirArbol(nodo = this, nivel = 0) {
+        const indent = '  '.repeat(nivel);
+
+        let extras = [];
+        if (this.#tipo !== null) extras.push(`Tipo: ${this.#tipo}`);
+        if (this.#rol !== null) extras.push(`Rol: ${this.#rol}`);
+        if (this.#errorSemantico !== null) extras.push(`Error: ${this.#errorSemantico}`);
+
+        console.log(`${indent}- ${this.#simbolo} ${this.#esTerminal ? '(Terminal)' : '(No Terminal)'} ${extras.join(' | ')}`);
+
+        for (const hijo of this.#hijos) {
+            hijo.imprimirArbol(hijo, nivel + 1);
+        }
+    }
 }
