@@ -2,16 +2,29 @@ Program id;
 
 var1 : Int;
 var2 : Real;
-var3 : String;
+var3 : Real[];
 
 {
 
-    for ( i := var1 ; x < var2 ; i := var1 ) { 
+    for ( i := 1 ; x < var2 ; i := -1.04342444  ) { 
 
         while x < var2 do { 
             
+           x := [3.3, 5.6, 7.9, 9.0] ;
+
+           y := [3.3, 5.6, 7.9, 9.0] + [7.888, 9.6, 89.1, 9.5] ;
+
+           if var2 > 100 then {
+
+                y := [4.3, 6.7];
+
+           } else {
+
+                y := [6.7, 4.3];
+
+           };
             
-            i := var1 ; 
+            i := var1 ;
             
         } ;
 

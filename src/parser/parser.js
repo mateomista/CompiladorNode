@@ -61,6 +61,14 @@ export class Parser {
             
             if (topePila.esTerminal) {
                 console.log(topePila.valor)
+                if (siguienteCompLexico.tipo === 'Real' || siguienteCompLexico.tipo === 'Int' ) {
+                    if (topePila.valor === siguienteCompLexico.tipo ) { 
+                        siguienteCompLexico = this.#analizadorLexico.siguienteToken();
+                        topePila = this.#pila.pop();
+                        topePilaNodos = this.#pilaNodos.pop();
+                        continue;
+                    }   
+                } else
                 if (siguienteCompLexico.tipo === 'id' || siguienteCompLexico.tipo === 'opRel') {
                     if (topePila.valor === siguienteCompLexico.tipo ) { 
                         siguienteCompLexico = this.#analizadorLexico.siguienteToken();
@@ -81,14 +89,16 @@ export class Parser {
             } else if (!topePila.esTerminal) {
                 let produccion
                 console.log('Tope de la pila de simbolos: ',topePila.valor);
+                console.log('Tipo Tope de la pila de simbolos: ',topePila.tipo);
                 console.log('Siguiente comp lexico: ', siguienteCompLexico.valor)
                 console.log('Tipo componente lex ', siguienteCompLexico.tipo)
-                if (siguienteCompLexico.tipo === 'id' || siguienteCompLexico.tipo === 'opRel') {
+                if (siguienteCompLexico.tipo === 'Real' || siguienteCompLexico.tipo === 'Int' ) {
+                    produccion = this.#tas.getValueAt('__EMPTY', topePila.valor, siguienteCompLexico.tipo)
+                } else if (siguienteCompLexico.tipo === 'id' || siguienteCompLexico.tipo === 'opRel') { // ver opRel
                      produccion = this.#tas.getValueAt('__EMPTY', topePila.valor, siguienteCompLexico.tipo)
                 } else { produccion = this.#tas.getValueAt('__EMPTY', topePila.valor, siguienteCompLexico.valor)}
                 
                 console.log(`Producción para (${topePila.valor}, ${siguienteCompLexico.valor}):`, produccion);
-                console.log(produccion);
                 if (!produccion) {
                     console.error(`Error, ${siguienteCompLexico.valor}, no es alcanzable desde ${topePila.valor}`)
                 } else if (produccion.trim() === 'ε') {
@@ -96,7 +106,6 @@ export class Parser {
                     topePilaNodos = this.#pilaNodos.pop();
                     continue;
                 } else {
-                    console.log('hola')
                     const nodosHijos = [];
                     const simbolos = produccion.trim().split(/\s+/);
                     for (const simbolo of simbolos) {

@@ -122,10 +122,24 @@ export function esSimboloEspecial(fuente, pos) {
             lexema += fuente[i];
             i++;
             return {
-                token: new Token('llaveAbre', lexema),
+                token: new Token('corcheteA', lexema),
                 nuevaPos: i
             };
         case '}':
+            lexema += fuente[i];
+            i++;
+            return {
+                token: new Token('corcheteC', lexema),
+                nuevaPos: i
+            };
+        case '[':
+            lexema += fuente[i];
+            i++;
+            return {
+                token: new Token('llaveAbre', lexema),
+                nuevaPos: i
+            };
+        case ']':
             lexema += fuente[i];
             i++;
             return {
