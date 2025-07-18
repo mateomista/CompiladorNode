@@ -120,23 +120,123 @@ export class AnalizadorSemantico {
 
     // Programa → “Program” “id” “;” DeclaracionVar “{“ Cuerpo “}”
     manejarPrograma(nodo){
-        this.#tablaDeSimbolos.agregar(new TokenSemantico(nodo.hijos[1].simbolo, null, true));
-        this.manejarDeclaracion(nodo.hijos[3]);
+        this.#tablaDeSimbolos.agregar(new TokenSemantico('id', nodo.hijos[1].token.lexema, nodo.hijos[1].token.lexema, null, false));
+        this.manejarDeclaracionVar(nodo.hijos[3]);
+        this.manejarCuerpo(nodo.hijos[5]);
     }
 
+    // DeclaracionVar → Declaracion DeclaracionVar | ε
+    manejarDeclaracionVar(nodo) {
+        
+            if (!nodo.hijos || nodo.hijos.length === 0) return;
+            this.manejarDeclaracion(nodo.hijos[0]);
+            if (nodo.hijos[1]) this.manejarDeclaracionVar(nodo.hijos[1]);
+        
+
+    }
+
+    // Declaracion → “id” “:” Tipo “;”
     manejarDeclaracion(nodo) {
-        const nombreVar = nodo.hijos[0].simbolo;
-        const tipoVar = nodo.hijos[2].simbolo;
-        if (this.#tablaDeSimbolos.existe(nombreVar)) {
-            this.#errores.push(`Variable '${nombreVar}' ya declarada`);
-        } else {
-            this.#tablaDeSimbolos.agregar(nombreVar, { tipo: tipoVar });
+
+        this.manejarTipo(nodo.hijos[2])
+        const tipoDato = nodo.hijos[2].token.tipoDeclarado;
+        const esArray = nodo.hijos[2].hijos[1] !== undefined && nodo.hijos[2].hijos[1] !== null;
+
+        try {
+            const token = new TokenSemantico('var', nodo.hijos[0].token.lexema, null, tipoDato, esArray)
+            this.#tablaDeSimbolos.agregar(token);
+        } catch (e) {
+            this.#errores.push(e.message);
         }
-        // Continuar análisis en hijos relevantes
+
+    }
+    
+    // Tipo → TipoBase TipoArreglo
+    manejarTipo(nodo) {
+
+        nodo.token.tipoDeclarado = nodo.hijos[0].simbolo;
+
     }
 
+    // Cuerpo → Secuencia 
+    manejarCuerpo(nodo) {
+        this.manejarSecuencia(nodo.hijos[0]);
+    }
+
+    // Secuencia → Sentencia Secuencia | ε
+    manejarSecuencia(nodo){
+        if (!nodo.hijos || nodo.hijos.length === 0) return;
+        this.manejarSentencia(nodo.hijos[0]);
+        if (nodo.hijos[1]) this.manejarDeclaracionVar(nodo.hijos[1]);
+    }
+
+    // Sentencia → Asignacion “;” | Escribir “;”  | SiEntSino “;”  | While “;” | For “;”
+    manejarSentencia(nodo){
+
+        const sentencia = nodo.hijos[0].simbolo;
+        const nodo = nodo.hijos[0];
+
+        switch(sentencia) {
+            case 'Asignacion':
+                this.manejarAsignacion(nodo);
+                break;
+            case 'Escribir':
+                this.manejarEscribir(nodo);
+                break;
+            case 'SiEntSino':
+                this.manejarSiEntSino(nodo);
+                break;
+            case 'While':
+                this.manejarWhile(nodo);
+                break;
+            case 'For':
+                this.manejarFor(nodo);
+                break;
+            default:
+                return;
+        }
+
+    }
+
+    // Asignacion → Variable “:=” AsignacionDetalle
     manejarAsignacion(nodo) {
-        // Verificar variable declarada, tipos, etc.
+        const tokenSemantico = this.#tablaDeSimbolos.obtener(nodo.hijos[0].token.lexema);
+        if (!tokenSemantico) {
+            this.#errores.push(`Error. Variable ${nodo.hijos[0].token.lexema} no declarada`);
+            return;
+        } else if (tokenSemantico.tipoDato != nodo.hijo[2].token.tipoDato){
+
+            this.#errores.push(`Error. Variable ${nodo.hijos[0].token.lexema} declarada como ${tokenSemantico.tipoDato}, no se puede asignar ${nodo.hijo[2].token.tipoDato}`);
+
+        } else {
+
+        }
+        let 
+    }
+
+    // ExpArit → Termino ExpArit'
+    manejarExpArit(nodo){
+        manejarTermino(nodo.hijos[0])
+    }
+
+    // Termino → Factor Termino'
+    manejarTermino(nodo){
+        manejarFactor(nodo.hijos[0]);
+    }
+
+    // Factor → Potencia Factor'
+    manejarFactor(nodo) {
+        manejarPotencia(nodo.hijos[0]);
+    }
+
+    // Potencia → “(“ ExpArit “)” | Variable | Real | LiteralArray | “-” Potencia 
+    manejarPotencia(nodo) {
+        let produccion = nodo.hijos[0];
+
+        switch(produccion) {
+            case 'Variable': 
+                manejarVariable
+        }
     }
 
     reportarErrores() {

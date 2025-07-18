@@ -6,7 +6,7 @@ export class TablaDeSimbolosSemantica {
   }
 
   agregar(tokenSemantico) {
-    if (tokenSemantico.esIdentificador) {
+    if (tokenSemantico.tipo === 'id') {
         if (this.contiene(tokenSemantico.lexema)) {
             throw new Error(`La variable '${tokenSemantico.lexema}' ya fue declarada anteriormente.`);
         }
@@ -26,6 +26,10 @@ export class TablaDeSimbolosSemantica {
     return this.simbolos.some(
       s => s.lexema === nombre 
     );
+  }
+
+  get simbolos() {
+    return this.#simbolos;
   }
 
   limpiar() {

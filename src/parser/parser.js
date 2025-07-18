@@ -3,6 +3,7 @@ import { TAS } from "./tas.js";
 import { NodoArbol, Arbol } from "./arbol.js";
 import { Token } from "../lexer/token.js";
 import { TokenPila, Pila } from "./pila.js";
+import { TokenSemantico } from "../semantic/tokenSemantico.js";
 
 const analizadorLexico = new AnalizadorLexico();
 const tas = new TAS();
@@ -111,7 +112,8 @@ export class Parser {
                     for (const simbolo of simbolos) {
                         
                         const esTerminal = !this.#noTerminales.includes(simbolo);
-                        const nodoHijo = new NodoArbol(simbolo, esTerminal);
+                        const tokenAsociado = new TokenSemantico(siguienteCompLexico.tipo, siguienteCompLexico.valor);
+                        const nodoHijo = new NodoArbol(simbolo, esTerminal, tokenAsociado);
                         topePilaNodos.agregarHijo(nodoHijo);
                         nodosHijos.push(nodoHijo);
                         
@@ -146,6 +148,9 @@ export class Parser {
 }
 
 let arbolSintactico = new Parser().parsear();
+let nodoRaiz = new NodoArbol();
+nodoRaiz = arbolSintactico.root;
 
-console.log('El arbol de derivacion resultante es: ')
-arbolSintactico.imprimirArbol();
+nodoRaiz.imprimirArbol();
+//console.log('El arbol de derivacion resultante es: ')
+//arbolSintactico.imprimirArbol();

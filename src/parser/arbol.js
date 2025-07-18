@@ -23,6 +23,7 @@ export class NodoArbol {
     #simbolo;
     #hijos;
     #esTerminal;
+    #token
 
     // para decoraciones semánticas
     #tipo;
@@ -31,11 +32,11 @@ export class NodoArbol {
     #valor;
     #errorSemantico;
 
-    constructor(simbolo, esTerminal = false) {
+    constructor(simbolo, esTerminal = false, token = null) {
         this.#simbolo = simbolo;
         this.#hijos = [];
         this.#esTerminal = esTerminal; 
-        
+        this.#token = token;
         // Inicializar decoraciones en null
         this.#tipo = null;
         this.#referenciaTS = null;
@@ -105,18 +106,27 @@ export class NodoArbol {
         this.#errorSemantico = valor;
     }
 
-    imprimirArbol(nodo = this, nivel = 0) {
-        const indent = '  '.repeat(nivel);
-
-        let extras = [];
-        if (this.#tipo !== null) extras.push(`Tipo: ${this.#tipo}`);
-        if (this.#rol !== null) extras.push(`Rol: ${this.#rol}`);
-        if (this.#errorSemantico !== null) extras.push(`Error: ${this.#errorSemantico}`);
-
-        console.log(`${indent}- ${this.#simbolo} ${this.#esTerminal ? '(Terminal)' : '(No Terminal)'} ${extras.join(' | ')}`);
-
-        for (const hijo of this.#hijos) {
-            hijo.imprimirArbol(hijo, nivel + 1);
-        }
+    get token() {
+        return this.#token;
     }
+
+    set token(valor) {
+        this.#token = valor;
+    }
+
+    imprimirArbol(nivel = 0) {
+    const indent = '  '.repeat(nivel);
+
+    let extras = [];
+    if (this.#tipo !== null) extras.push(`Tipo: ${this.#tipo}`);
+    if (this.#rol !== null) extras.push(`Rol: ${this.#rol}`);
+    if (this.#errorSemantico !== null) extras.push(`Error: ${this.#errorSemantico}`);
+
+    console.log(`${indent}- ${this.#simbolo} ${this.#esTerminal ? '(Terminal)' : '(No Terminal)'} ${extras.join(' | ')} ${this.#token}`);
+
+    for (const hijo of this.#hijos) {
+        hijo.imprimirArbol(nivel + 1);
+    }
+}
+
 }
