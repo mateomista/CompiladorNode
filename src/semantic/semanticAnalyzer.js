@@ -209,35 +209,79 @@ export class AnalizadorSemantico {
             this.#errores.push(`Error. Variable ${nodo.hijos[0].token.lexema} declarada como ${tokenSemantico.tipoDato}, no se puede asignar ${nodo.hijo[2].token.tipoDato}`);
 
         } else {
-
+            this.manejarAsignacionDetalle(nodo.hijos[2])
+            // nodo.hijos[0].hijos[0].token.valor = nodo.hijos[2].hijos[]
         }
-        let 
+         
+    }
+
+    // AsignacionDetalle →  ExpArit | Leer
+    manejarAsignacionDetalle(nodo){
+        if (nodo.hijos[0].simbolo === 'ExpArit') {
+            this.manejarExpArit(nodo.hijos[0]);
+        } else {
+            this.manejarLeer(nodo.hijos[0]);
+        }
     }
 
     // ExpArit → Termino ExpArit'
     manejarExpArit(nodo){
-        manejarTermino(nodo.hijos[0])
+        this.manejarTermino(nodo.hijos[0]);
+        this.manejarExpAritPrima(nodo.hijos[1]);
     }
 
     // Termino → Factor Termino'
     manejarTermino(nodo){
-        manejarFactor(nodo.hijos[0]);
+        this.manejarFactor(nodo.hijos[0]);
+        this.manejarTerminoLogicoPrima(nodo.hijos[1])
     }
 
     // Factor → Potencia Factor'
     manejarFactor(nodo) {
-        manejarPotencia(nodo.hijos[0]);
+        this.manejarPotencia(nodo.hijos[0]);
+        this.manejarFactorPrima(nodo.hijos[1]);
     }
 
     // Potencia → “(“ ExpArit “)” | Variable | Real | LiteralArray | “-” Potencia 
     manejarPotencia(nodo) {
-        let produccion = nodo.hijos[0];
+        let produccion = nodo.hijos[0].simbolo;
 
         switch(produccion) {
             case 'Variable': 
-                manejarVariable
+                this.manejarVariable(nodo.hijos[0]);
+                nodo.token.tipoDeclarado = nodo.hijos[0].token.tipoDato;
+                nodo.token.valor = nodo.hijos[0].token.valor;
+            case 'Real':
+                nodo.hijo[0].token.valor = Number(nodo.hijo[0].token.lexema);
+                nodo.token.valor = nodo.hijo[0].token.valor
         }
     }
+
+    // Variable → “id” AccesoArreglo
+   manejarVariable(nodo) {
+        const lexema = nodo.hijos[0].token.lexema;
+        
+        const tokenTS = this.#tablaDeSimbolos.obtener(lexema);
+        
+        if (tokenTS) {
+
+            nodo.token.tipoDato = tokenTS.tipoDato;    
+            nodo.token.tipo = 'var';                    
+
+        } else {
+            this.#errores.push(`Error. Variable '${lexema}' no declarada`);
+            return;
+        } 
+
+        if (nodo.hijos[1]) {
+            this.manejarAccesoArreglo(nodo.hijos[1]);
+        }
+    }
+
+    manejarAccesoArreglo(nodo) {
+        
+    }
+
 
     reportarErrores() {
         this.errores.forEach(e => console.error(e));
