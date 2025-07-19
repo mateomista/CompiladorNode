@@ -226,8 +226,44 @@ export class AnalizadorSemantico {
 
     // ExpArit → Termino ExpArit'
     manejarExpArit(nodo){
+
         this.manejarTermino(nodo.hijos[0]);
         this.manejarExpAritPrima(nodo.hijos[1]);
+
+        
+    }
+
+    // ExpArit' → “+” Termino ExpArit' | “-” Termino ExpArit' | ε
+    manejarExpAritPrima(nodo){
+
+        if (nodo.hijos.length === 0) return;
+
+        this.manejarTermino(nodo.hijos[1]);
+
+        if (nodo.hijos[2]) {
+
+            this.manejarExpAritPrima(nodo.hijos[2]);
+
+            if (nodo.hijos[1].token.tipoDato === 'String' || nodo.hijos[2].token.tipoDato === 'String') {
+                this.#errores.push('Error. Se esperaba datos numericos en expresion aritmetica.');
+                return;
+            }
+
+            if (nodo.hijos[1].token.tipoDato === 'Int' && nodo.hijos[2].token.tipoDato === 'Int') {
+                nodo.token.tipoDato = 'Int';
+            } else if (nodo.hijos[1].token.tipoDato === 'Real' && nodo.hijos[2].token.tipoDato === 'Real'){
+                nodo.token.tipoDato = 'Real';             
+            } else {
+                nodo.token.tipoDato = 'Real';         
+            }
+            
+        }
+
+        
+    }
+
+    manejarTerminoPrima(nodo){
+
     }
 
     // Termino → Factor Termino'
@@ -251,9 +287,15 @@ export class AnalizadorSemantico {
                 this.manejarVariable(nodo.hijos[0]);
                 nodo.token.tipoDeclarado = nodo.hijos[0].token.tipoDato;
                 nodo.token.valor = nodo.hijos[0].token.valor;
+                break;
             case 'Real':
-                nodo.hijo[0].token.valor = Number(nodo.hijo[0].token.lexema);
-                nodo.token.valor = nodo.hijo[0].token.valor
+                nodo.hijos[0].token.valor = Number(nodo.hijos[0].token.lexema);
+                nodo.token.valor = nodo.hijos[0].token.valor;
+                break;
+            case 'LiteralArray':
+                this.manejarLiteralArray(nodo.hijos[0]);
+                
+
         }
     }
 
@@ -278,8 +320,20 @@ export class AnalizadorSemantico {
         }
     }
 
+    // AccesoArreglo → “[” ExpArit “]” | ε       
     manejarAccesoArreglo(nodo) {
-        
+        if (nodo.hijos[1]) {
+            this.manejarExpArit(nodo.hijos[1])
+        } else {
+            return;
+        }
+
+        const valorIndice = nodo.hijos[1].token.valor;
+
+        if (typeof valorIndice !== 'number' || !Number.isInteger(valorIndice)) {
+           this.#errores.push(`Error. El acceso al array debe ser entero.`) 
+        }
+
     }
 
 

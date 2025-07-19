@@ -8,6 +8,8 @@ var3 : Real[];
 
     for ( i := 1 ; x < var2 ; i := -1.04342444  ) { 
 
+        var3[3] := var2;
+
         while x < var2 do { 
             
            x := [3.3, 5.6, 7.9, 9.0] ;
